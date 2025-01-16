@@ -11,24 +11,65 @@ public class CustomerService {
         // Test Cases
 
         // Test 1
-        // Scenario: 
-        // Expected Result: 
+        // Scenario: Size of queue is set to -1
+        // Expected Result: Size will be set to 10
         Console.WriteLine("Test 1");
+        var CS = new CustomerService(-1);
+        Console.WriteLine($"Size: {CS._maxSize}");
 
-        // Defect(s) Found: 
+        // Defect(s) Found: None
 
         Console.WriteLine("=================");
 
         // Test 2
-        // Scenario: 
-        // Expected Result: 
+        // Scenario: Customer is added to a queue of size 1
+        // Expected Result: Customer is added with no errors thrown
         Console.WriteLine("Test 2");
+        CS = new CustomerService(1);
+        CS.AddNewCustomer();
 
-        // Defect(s) Found: 
+        // Defect(s) Found: None
 
         Console.WriteLine("=================");
 
         // Add more Test Cases As Needed Below
+
+        // Test 3
+        // Scenario: A second Customer is added to a queue of size 1
+        // Expected Result: An error message will be displayed
+        Console.WriteLine("Test 3");
+        CS = new CustomerService(1);
+        CS.AddNewCustomer();
+        CS.AddNewCustomer();
+
+        // Defect(s) Found: Off by 1 error allows for one more than max size Customers to be added
+
+        Console.WriteLine("=================");
+
+        // Test 4
+        // Scenario: A Customer has been served and needs to be removed from queue
+        // Expected Result: The first Customer in the queue will be removed from the queue with details printed out
+        Console.WriteLine("Test 4");
+        CS = new CustomerService(2);
+        CS.AddNewCustomer();
+        CS.AddNewCustomer();
+        CS.ServeCustomer();
+
+        // Defect(s) Found: The Customer data saved to be printed out was initialized after the customer was removed
+
+        Console.WriteLine("=================");
+
+        // Test 5
+        // Scenario: A Customer is Removed while the queue is empty
+        // Expected Result: An error message is displayed to show that the queue has no Customer to be removed
+        Console.WriteLine("Test 5");
+        CS = new CustomerService(1);
+        CS.ServeCustomer();
+
+
+        // Defect(s) Found: There is not a check to detect the queue being empty when removing a Customer
+
+        Console.WriteLine("=================");
     }
 
     private readonly List<Customer> _queue = new();
@@ -67,7 +108,7 @@ public class CustomerService {
     /// </summary>
     private void AddNewCustomer() {
         // Verify there is room in the service queue
-        if (_queue.Count > _maxSize) {
+        if (_queue.Count >= _maxSize) {
             Console.WriteLine("Maximum Number of Customers in Queue.");
             return;
         }
@@ -88,8 +129,13 @@ public class CustomerService {
     /// Dequeue the next customer and display the information.
     /// </summary>
     private void ServeCustomer() {
-        _queue.RemoveAt(0);
+        if (_queue.Count == 0)
+        {
+            Console.WriteLine("There are no Customers to serve.");
+            return;
+        }
         var customer = _queue[0];
+        _queue.RemoveAt(0);
         Console.WriteLine(customer);
     }
 
