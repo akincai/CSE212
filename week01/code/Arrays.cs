@@ -49,7 +49,10 @@ public static class Arrays
         // List of size 10 rotated right by 2 would use a Range of (8,2) or (size-amount, amount)
         // Insertion does not affect removing the end of the list, so getting and insertion can be done
         //  before removing the end
+        
+        // Post submission edit: added line of code to adjust value of amount to be less than data.Count
 
+        amount = amount % data.Count;
         data.InsertRange(0, data.GetRange(data.Count-amount, amount));
         data.RemoveRange(data.Count-amount, amount);
     }
