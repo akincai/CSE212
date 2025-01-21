@@ -13,7 +13,19 @@ public static class Arrays
         // step by step before you write the code. The plan should be clear enough that it could
         // be implemented by another person.
 
-        return []; // replace this return statement with your own
+        // Initialize an empty double[] array of length: {length}
+        // Create a for loop with {length} iterations starting at 0
+        // Set array index [i] = ({number} * {i+1}) (i is the index of the for loop) for each iteration
+        // Return the array
+
+        double[] multiples = new double[length];
+
+        for (int i = 0; i < length; i++)
+        {
+            multiples[i] = number * (i+1);
+        }
+        
+        return multiples;
     }
 
     /// <summary>
@@ -29,5 +41,16 @@ public static class Arrays
         // Remember: Using comments in your program, write down your process for solving this problem
         // step by step before you write the code. The plan should be clear enough that it could
         // be implemented by another person.
+
+        // If a list is rotated to the right by {amount}, you're essentially taking a slice of size {amount}
+        //  off the end and moving it to the front of the list
+        // If the amount is as big or greater than the size of the list, it can be said that the remainder
+        //  is how much the list would be rotated by
+        // List of size 10 rotated right by 2 would use a Range of (8,2) or (size-amount, amount)
+        // Insertion does not affect removing the end of the list, so getting and insertion can be done
+        //  before removing the end
+
+        data.InsertRange(0, data.GetRange(data.Count-amount, amount));
+        data.RemoveRange(data.Count-amount, amount);
     }
 }
