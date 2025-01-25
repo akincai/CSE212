@@ -1,3 +1,4 @@
+using System.Security.Cryptography.X509Certificates;
 using System.Text.Json;
 
 public static class SetsAndMaps
@@ -21,8 +22,18 @@ public static class SetsAndMaps
     /// <param name="words">An array of 2-character words (lowercase, no duplicates)</param>
     public static string[] FindPairs(string[] words)
     {
-        // TODO Problem 1 - ADD YOUR CODE HERE
-        return [];
+        var pairs = new List<string>();
+        HashSet<string> set = new HashSet<string>();
+        foreach (string word in words)
+        {
+            char[] cArr = word.ToCharArray();
+            Array.Reverse(cArr);
+            var revWord = new string(cArr);
+            if (set.Contains(revWord))
+                pairs.Add($"{word} & {revWord}");
+            set.Add(word);
+        }
+        return [..pairs];
     }
 
     /// <summary>
@@ -42,7 +53,11 @@ public static class SetsAndMaps
         foreach (var line in File.ReadLines(filename))
         {
             var fields = line.Split(",");
-            // TODO Problem 2 - ADD YOUR CODE HERE
+            var qual = fields[3];
+            if (degrees.ContainsKey(qual))
+                degrees[qual] += 1;
+            else
+                degrees[qual] = 1;
         }
 
         return degrees;
@@ -66,8 +81,32 @@ public static class SetsAndMaps
     /// </summary>
     public static bool IsAnagram(string word1, string word2)
     {
-        // TODO Problem 3 - ADD YOUR CODE HERE
-        return false;
+        //remove blank space and ignore case sensitivity
+        word1 = word1.ToLower().Replace(" ","");
+        word2 = word2.ToLower().Replace(" ","");
+        if (word1.Length != word2.Length)
+            return false;
+        var letters = new Dictionary<char, int>();
+        for (int i = 0; i < word1.Length; i++)
+        {
+            //add 1 to dictionary value if a letter is in word1
+            if (letters.ContainsKey(word1[i]))
+                letters[word1[i]] += 1;
+            else
+                letters[word1[i]] = 1;
+            
+            //subtract 1 from dictionary value if a letter is in word2
+            if (letters.ContainsKey(word2[i]))
+                letters[word2[i]] += -1;
+            else
+                letters[word2[i]] = -1;
+        }
+        //if all values are 0, the word is an anagram (letters appear same amount of times in each word)
+        foreach (var value in letters.Values)
+            if (value != 0)
+                return false;
+
+        return true;
     }
 
     /// <summary>
@@ -101,6 +140,9 @@ public static class SetsAndMaps
         // on those classes so that the call to Deserialize above works properly.
         // 2. Add code below to create a string out each place a earthquake has happened today and its magitude.
         // 3. Return an array of these string descriptions.
-        return [];
+        List<string> quakes = new List<string>();
+        foreach (var feature in featureCollection.features)
+            quakes.Add($"{feature.properties.place} - Mag {feature.properties.mag}");
+        return [..quakes];
     }
 }
