@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Security.Cryptography.X509Certificates;
 
 public static class Recursion
 {
@@ -15,7 +16,12 @@ public static class Recursion
     public static int SumSquaresRecursive(int n)
     {
         // TODO Start Problem 1
-        return 0;
+        if (n == 1)
+            return 1;
+        if (n <= 0) // edge case where n starts less than 1
+            return 0;
+
+        return (int)Math.Pow(n,2) + SumSquaresRecursive(n-1); // why does the caret operator do XOR operations? That's so disappointing
     }
 
     /// <summary>
@@ -40,6 +46,16 @@ public static class Recursion
     public static void PermutationsChoose(List<string> results, string letters, int size, string word = "")
     {
         // TODO Start Problem 2
+        for (int i = 0; i < letters.Length; i++)
+        {
+            if (word.Length == size)
+            {
+                results.Add(word);
+                return;
+            }
+            var remainder = letters.Remove(i,1);
+            PermutationsChoose(results, remainder, size, word+letters[i]);
+        }
     }
 
     /// <summary>
@@ -97,9 +113,15 @@ public static class Recursion
             return 4;
 
         // TODO Start Problem 3
+        if (remember is null) // initialize on first iteration
+            remember = new Dictionary<int, decimal>();
+        
+        if (remember.TryGetValue(s, out decimal value))
+            return value;
 
         // Solve using recursion
         decimal ways = CountWaysToClimb(s - 1) + CountWaysToClimb(s - 2) + CountWaysToClimb(s - 3);
+        remember[s] = ways; // if the code has reached this spot, it means the key value pair did not exist
         return ways;
     }
 
@@ -119,6 +141,14 @@ public static class Recursion
     public static void WildcardBinary(string pattern, List<string> results)
     {
         // TODO Start Problem 4
+        int firstWild = pattern.IndexOf("*");
+        if (firstWild != -1)
+        {
+            WildcardBinary(pattern[..firstWild]+"0"+pattern[(firstWild+1)..], results);
+            WildcardBinary(pattern[..firstWild]+"1"+pattern[(firstWild+1)..], results);
+        }
+        else
+            results.Add(pattern);
     }
 
     /// <summary>
@@ -133,11 +163,26 @@ public static class Recursion
             currPath = new List<ValueTuple<int, int>>();
         }
         
+        
         // currPath.Add((1,2)); // Use this syntax to add to the current path
 
         // TODO Start Problem 5
         // ADD CODE HERE
-
+        currPath.Add((x,y));
+        if (maze.IsEnd(x,y))
+        {
+            results.Add(currPath.AsString());
+            return;
+        }
+        if(maze.IsValidMove(currPath, x+1, y))
+            SolveMaze(results, maze, x+1, y, [..currPath]); // have to create a copy of the list so data does not persist throughout recursion
+        if(maze.IsValidMove(currPath, x-1, y))
+            SolveMaze(results, maze, x-1, y, [..currPath]);
+        if(maze.IsValidMove(currPath, x, y+1))
+            SolveMaze(results, maze, x, y+1, [..currPath]);
+        if(maze.IsValidMove(currPath, x, y-1))
+            SolveMaze(results, maze, x, y-1, [..currPath]);
+        
         // results.Add(currPath.AsString()); // Use this to add your path to the results array keeping track of complete maze solutions when you find the solution.
     }
 }
