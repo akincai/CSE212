@@ -120,7 +120,7 @@ public static class Recursion
             return value;
 
         // Solve using recursion
-        decimal ways = CountWaysToClimb(s - 1) + CountWaysToClimb(s - 2) + CountWaysToClimb(s - 3);
+        decimal ways = CountWaysToClimb(s - 1, remember) + CountWaysToClimb(s - 2, remember) + CountWaysToClimb(s - 3, remember);
         remember[s] = ways; // if the code has reached this spot, it means the key value pair did not exist
         return ways;
     }
